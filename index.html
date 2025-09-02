@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>مدرسہ آن لائن — Demo</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body{font-family: system-ui,-apple-system,Segoe UI,Roboto,"Jameel Noori Nastaleeq",sans-serif;margin:0;background:#f3f4f6;color:#111}
+    .container{max-width:420px;margin:14px auto;padding:16px}
+    header{display:flex;flex-direction:column;gap:8px;align-items:center}
+    .search{width:100%;padding:10px;border-radius:12px;border:1px solid #ddd;text-align:right}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+    .card{background:#fff;padding:18px;border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,0.06);text-align:center}
+    .card h3{margin:8px 0 0 0;font-size:18px}
+    .reader{background:#fff;padding:14px;border-radius:12px;margin-top:16px}
+    .ayah{padding:6px;border-radius:8px}
+    .ayah.active{background:#dcfce7;color:#064e3b}
+    footer{position:fixed;left:0;right:0;bottom:0;background:#fff;padding:12px;display:flex;justify-content:space-around;border-top:1px solid #eee}
+    .controls button{padding:8px 12px;border-radius:10px;border:1px solid #ccc;background:#fff}
+    select{padding:8px;border-radius:10px}
+  </style>
+</head>
+<body>
+  <div class="container" id="app">
+    <header>
+      <h1>📱 مدرسہ آن لائن</h1><h2>(حافظ محمد شعیب خان آلائی)</h2>
+      <input class="search" id="search" placeholder="🔍 تلاش کریں..." />
+    </header>
+
+    <div class="grid" id="mainGrid">
+      <div class="card"><div>📖</div><h3>قرآن مجید</h3></div>
+      <div class="card"><div>📚</div><h3>احادیث</h3></div>
+      <div class="card"><div>⚖️</div><h3>فتاویٰ جات</h3></div>
+      <div class="card"><div>☪️</div><h3>عقائد</h3></div>
+      <div class="card"><div>🌙</div><h3>وظائف و اوراد</h3></div>
+      <div class="card"><div>🌿</div><h3>روحانی و طبی علاج</h3></div>
+      <div class="card"><div>📘</div><h3>دیگر</h3></div>
+    </div>
+
+    <div class="reader" id="reader">
+      <h3>قرآن ریڈر — Demo</h3>
+      <div id="ayas"></div>
+
+      <div style="display:flex;gap:8px;margin-top:10px;align-items:center;justify-content:center">
+        <button id="prevAyah">◀ پچھلی آیت</button>
+        <button id="playBtn">▶ Play</button>
+        <button id="pauseBtn">⏸ Pause</button>
+        <button id="stopBtn">■ Stop</button>
+        <button id="nextAyah">اگلی آیت ▶</button>
+      </div>
+
+      <div style="margin-top:8px;text-align:center;">
+        <label>قاری: </label>
+        <select id="reciter">
+          <option value="Alafasy_64kbps">مشاری راشد العفاسی</option>
+          <option value="Abdurrahman_As-Sudais_64kbps">عبدالرحمن السدیس</option>
+          <option value="Abdul_Basit_Mujawwad_64kbps">عبدالباسط</option>
+          <option value="Saad_Al-Ghamdi_64kbps">سعد الغامدی</option>
+          <option value="Mahmoud_Al-Hussary_64kbps">محمود الحصری</option>
+          <option value="Muhammad_Ayyub_64kbps">محمد ایوب</option>
+          <option value="Ahmed_ibn_Ali_al-Ajamy_64kbps">احمد العجمی</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div>🏠 ہوم</div>
+    <div>⭐ پسندیدہ</div>
+    <div>⚙️ سیٹنگز</div>
+  </footer>
+
+  <audio id="audio" preload="none"></audio>
+
+  <script>
+    const ayat = [
+      { num: "001001", text: "بِسْمِ اللّٰہِ الرَّحْمٰنِ الرَّحِیْمِ" },
+      { num: "001002", text: "اَلْحَمْدُ لِلّٰہِ رَبِّ الْعٰلَمِیْنَ" },
+      { num: "001003", text: "الرَّحْمٰنِ الرَّحِیْمِ" },
+      { num: "001004", text: "مٰلِكِ یَوْمِ الدِّیْنِ" },
+      { num: "001005", text: "اِیَّاكَ نَعْبُدُ وَ اِیَّاكَ نَسْتَعِیْنُ" },
+      { num: "001006", text: "اِهْدِنَا الصِّرَاطَ الْمُسْتَقِیْمَ" },
+      { num: "001007", text: "صِرَاطَ الَّذِیْنَ اَنْعَمْتَ عَلَیْهِمْ..." }
+    ];
+    const ayasEl = document.getElementById('ayas');
+    let current = 0;
+    const audio = document.getElementById('audio');
+    const reciterSel = document.getElementById('reciter');
+
+    function renderAyat() {
+      ayasEl.innerHTML = '';
+      ayat.forEach((a,i)=>{
+        const p = document.createElement('p');
+        p.className = 'ayah' + (i===current ? ' active' : '');
+        p.textContent = a.text;
+        p.dataset.num = a.num;
+        ayasEl.appendChild(p);
+      });
+      setAudioSrc();
+    }
+
+    function setAudioSrc(){
+      const r = reciterSel.value;
+      const num = ayat[current].num;
+      const url = 'https://everyayah.com/data/' + r + '/' + num + '.mp3';
+      audio.src = url;
+    }
+
+    document.getElementById('playBtn').addEventListener('click', ()=>{ audio.play(); });
+    document.getElementById('pauseBtn').addEventListener('click', ()=> audio.pause());
+    document.getElementById('stopBtn').addEventListener('click', ()=> { audio.pause(); audio.currentTime=0; });
+    document.getElementById('prevAyah').addEventListener('click', ()=> { if(current>0){ current--; renderAyat(); } });
+    document.getElementById('nextAyah').addEventListener('click', ()=> { if(current<ayat.length-1){ current++; renderAyat(); } });
+
+    reciterSel.addEventListener('change', ()=> setAudioSrc());
+    audio.addEventListener('play', ()=>{
+      document.querySelectorAll('.ayah').forEach((el,i)=> el.classList.toggle('active', i===current));
+    });
+    audio.addEventListener('ended', ()=>{
+      if(current < ayat.length-1){ current++; renderAyat(); audio.play().catch(()=>{}); }
+    });
+
+    renderAyat();
+  </script>
+</body>
+</html>
