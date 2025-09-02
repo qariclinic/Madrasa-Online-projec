@@ -1,3 +1,4 @@
+﻿ HEAD
 # Madrasa Online — Final Demo
 
 ## شامل فیچرز
@@ -15,3 +16,6 @@ python3 -m http.server 8000
 
 ## APK بلڈ
 - `.github/workflows/build-apk.yml` GitHub پر push کرنے کے بعد خودکار طور پر APK بلڈ کرے گا۔
+ Madrasa-Online-projec
+Madrasa Online projec
+ d511d7579f838c99e249054bbf0f87ab02e81d6c
