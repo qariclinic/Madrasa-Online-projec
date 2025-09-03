@@ -18,11 +18,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Install bubblewrap
+      - name: name: Initialize Bubblewrap
         run: npm install -g @bubblewrap/cli
       - name: Build TWA
         run: |
-          npx @bubblewrap/cli@latest init --manifest ./manifest.json --applicationId com.example.madrasa || true
+          npxrun: npx @bubblewrap/cli@latest init --manifest ./manifest.json --applicationId com.example.madrasa --yes --jdk=17
           npx @bubblewrap/cli@latest build
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
