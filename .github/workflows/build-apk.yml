@@ -18,8 +18,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: name: Initialize Bubblewrap
-        run: npm install -g @bubblewrap/cli
+      - name: - name: Initialize Bubblewrap
+  run: npx @bubblewrap/cli@latest init --manifest ./manifest.json --applicationId com.example.madrasa --yes --jdk=17
+
       - name: Build TWA
         run: |
           npxrun: npx @bubblewrap/cli@latest init --manifest ./manifest.json --applicationId com.example.madrasa --yes --jdk=17
